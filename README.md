@@ -1,22 +1,28 @@
 # cals-mock-api
 Mock api to facilitate CALS development
 
-Things you may want to cover:
+git clone git@github.com:CambriaSolutions/cals-mock-api.git
 
-* Ruby version
 
-* System dependencies
+Pre-requisite:
+Postgresql database installed and running as service.
 
-* Configuration
+bundle install 
+# brew will automatically initialize database directory
+Brew install postgresql
 
-* Database creation
+# enable services 
+Brew services
 
-* Database initialization
+# create common user
+createuser -P -d -l pguser
+# password cals101
 
-* How to run the test suite
+# run postgres server at launch and in the background
+Brew services start postgres
 
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+bundle exec rake db:create
+ 
+bin/rails db:migrate RAILS_ENV=development
+  
+rake db:seed
