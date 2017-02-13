@@ -25,6 +25,7 @@ gem 'jbuilder', '~> 2.5'
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 # gem 'rack-cors'
+gem 'faker'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -34,10 +35,8 @@ group :development, :test do
   gem 'rails-controller-testing'
   gem 'factory_girl_rails', '~> 4.8'
   gem 'shoulda-matchers', '~> 3.1'
-  gem 'faker'
 
   gem 'pry'
-
 end
 
 group :development do
