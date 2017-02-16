@@ -7,22 +7,27 @@ git clone git@github.com:CambriaSolutions/cals-mock-api.git
 Pre-requisite:
 Postgresql database installed and running as service.
 
-bundle install 
-# brew will automatically initialize database directory
-Brew install postgresql
+    bundle install 
 
-# enable services 
-Brew services
+#### brew will automatically initialize database directory
+    
+    Brew install postgresql
 
-# create common user
-createuser -P -d -l pguser
-# password cals101
+## enable services 
+    
+    Brew services
 
-# run postgres server at launch and in the background
-Brew services start postgres
+#### create common user
+    
+    createuser -P -d -l pguser
+password cals101
 
-bundle exec rake db:create
+#### run postgres server at launch and in the background
+    
+    Brew services start postgres
+
+    bundle exec rake db:create
  
-bin/rails db:migrate RAILS_ENV=development
+    bin/rails db:migrate RAILS_ENV=development
   
-rake db:seed
+    rake db:seed
