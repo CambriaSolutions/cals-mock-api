@@ -12,9 +12,21 @@ default: &default
 
 development:
   <<: *default
+  url: devdb1.cs-cals.com
   username: pguser
-  password: cals101
-  database: cals-mock-api_dev
+  password:
+  database: cals-mock-api_aws_dev
+  # <<: *default
+  # username: pguser
+  # password: cals101
+  # database: cals-mock-api_dev
+
+aws_dev:
+  <<: *default
+  url: devdb1.cs-cals.com
+  username: pguser
+  password:
+  database: cals-mock-api_aws_dev
 
 test:
   <<: *default
