@@ -1,6 +1,9 @@
 development:
   adapter: async
 
+aws_dev:
+  adapter: async
+
 test:
   adapter: async
 
