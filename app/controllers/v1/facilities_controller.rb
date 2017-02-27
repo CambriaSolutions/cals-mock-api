@@ -29,7 +29,8 @@ class V1::FacilitiesController < ApplicationController
 
   private
     def find_facility
-      @facility = Facility.find(params[:id])
+      val = params[:id]
+      @facility = Facility.find_by(isn_lis_fac_file: val)
     end
 
     def facility_params
