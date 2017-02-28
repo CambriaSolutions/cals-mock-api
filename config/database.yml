@@ -19,9 +19,9 @@ development:
 aws_dev:
   <<: *default
   host: devdb1.cs-cals.com
-  username: postgres
+  username: pguser
   password:
-  database: cals-mock-api_aws_dev
+  database: pguser
 
 test:
   <<: *default
