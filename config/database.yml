@@ -12,20 +12,14 @@ default: &default
 
 development:
   <<: *default
-  host: dev.cs-cals.com
   username: pguser
-  password:
-  database: pguser
-  port: 5432
-  # <<: *default
-  # username: pguser
-  # password: cals101
-  # database: cals-mock-api_dev
+  password: cals101
+  database: cals-mock-api_dev
 
 aws_dev:
   <<: *default
-  url: devdb1.cs-cals.com
-  username: pguser
+  host: devdb1.cs-cals.com
+  username: postgres
   password:
   database: cals-mock-api_aws_dev
 
