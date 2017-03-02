@@ -3,7 +3,7 @@ class V1::FacilitiesController < ApplicationController
 
   # GET /v1/facilities
   def index
-    @facilities = Facility.all
+    @facilities = Facility.where 'fac_nbr IS NOT NULL'
     json_response(@facilities)
   end
 
@@ -30,7 +30,7 @@ class V1::FacilitiesController < ApplicationController
   private
     def find_facility
       val = params[:id]
-      @facility = Facility.find_by(isn_lis_fac_file: val)
+      @facility = Facility.find_by(fac_nbr: val)
     end
 
     def facility_params
