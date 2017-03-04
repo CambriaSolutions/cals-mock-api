@@ -3,7 +3,7 @@ class V1::FacilitiesController < ApplicationController
 
   # GET /v1/facilities
   def index
-    @facilities = Facility.where 'fac_nbr IS NOT NULL'
+    @facilities = Facility.includes(:county_mapping, :district_office_mapping, :status_mapping, :type_mapping, :last_visit_reason_mapping).all
     json_response(@facilities)
   end
 
