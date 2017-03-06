@@ -6,6 +6,7 @@ class Facility < ActiveRecord::Base
   belongs_to :status_mapping, :class_name => 'CodeMapping::FacilityStatus', :foreign_key => 'fac_status'
   belongs_to :type_mapping, :class_name => 'CodeMapping::FacilityType', :foreign_key => 'fac_type'
   belongs_to :last_visit_reason_mapping, :class_name => 'CodeMapping::LastVisitReason', :foreign_key => 'fac_last_visit_reason'
+  belongs_to :assigned_worker_mapping, :class_name => 'CodeMapping::AssignedWorker', :foreign_key => 'fac_do_eval_code'
 
   def county
     county_mapping&.value
@@ -25,5 +26,9 @@ class Facility < ActiveRecord::Base
 
   def last_visit_reason
     last_visit_reason_mapping&.value
+  end
+
+  def assigned_worker
+    assigned_worker_mapping&.value
   end
 end

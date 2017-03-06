@@ -6,4 +6,5 @@ class CodeMapping::Base < ActiveRecord::Base
   scope :facility_types, -> { where(type: 'CodeMapping::FacilityType') }
   scope :facility_statuses, -> { where(type: 'CodeMapping::FacilityStatus') }
   scope :last_visit_reasons, -> { where(type: 'CodeMapping::LastVisitReason') }
+  scope :assigned_worker, -> { where(type: 'CodeMapping::AssignedWorker') }
 end
