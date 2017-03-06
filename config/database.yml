@@ -12,9 +12,9 @@ default: &default
 
 development:
   <<: *default
+  host: dev.cs-cals.com
   username: pguser
-  password: cals101
-  database: cals-mock-api_dev
+  database: pguser
 
 aws_dev:
   <<: *default
