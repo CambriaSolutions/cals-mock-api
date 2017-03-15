@@ -12,7 +12,6 @@ default: &default
 
 development:
   <<: *default
-  host: dev.cs-cals.com
   username: pguser
   database: pguser
 
