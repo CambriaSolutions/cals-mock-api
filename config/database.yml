@@ -25,8 +25,7 @@ aws_dev:
 test:
   <<: *default
   username: pguser
-  password: cals101
-  database: cals-mock-api_test
+  database: pguser_test
 
 # As with config/secrets.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
