@@ -27,6 +27,11 @@ class V1::FacilitiesController < ApplicationController
     @facility.destroy
   end
 
+  def search
+    @facilities = Facility.search(params[:query]).records
+    json_response(@facilities)
+  end
+
   private
     def find_facility
       val = params[:id]

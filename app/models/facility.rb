@@ -1,5 +1,10 @@
+require 'elasticsearch/model'
 class Facility < ActiveRecord::Base
   self.table_name = 'facility_info_lis'
+  self.primary_key = 'fac_nbr'
+
+  include Elasticsearch::Model
+  include Elasticsearch::Model::Callbacks
 
   belongs_to :county_mapping, :class_name => 'CodeMapping::County', :foreign_key => 'fac_co_nbr'
   belongs_to :district_office_mapping, :class_name => 'CodeMapping::DistrictOffice', :foreign_key => 'fac_do_nbr'

@@ -27,6 +27,8 @@ gem 'jbuilder', '~> 2.5'
 # gem 'rack-cors'
 gem 'faker'
 gem 'active_model_serializers', github: 'rails-api/active_model_serializers'
+gem 'elasticsearch-model', '~> 0.1.9'
+gem 'elasticsearch-rails', '~> 0.1.9'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
