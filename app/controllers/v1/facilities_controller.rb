@@ -9,7 +9,11 @@ class V1::FacilitiesController < ApplicationController
 
   # GET /v1/facilities/:id
   def show
-    json_response(@facility)
+    if @facility
+      json_response(@facility)
+    else
+      render json: I18n.t('facilities_controller.facility_not_found'), status: :not_found
+    end
   end
 
   def update

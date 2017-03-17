@@ -3,8 +3,9 @@ require 'rails_helper'
 RSpec.describe 'Facilities API', type: :request do
 
   # initialize test data
+
   let!(:facilities) { create_list(:facility, 10) }
-  let(:facility_id) { facilities.first.id }
+  let(:facility_number) { facilities.first.fac_nbr }
 
   # Test suite for GET /facilities
   describe 'GET /facilities' do
@@ -24,12 +25,12 @@ RSpec.describe 'Facilities API', type: :request do
   end
 
   describe 'GET /facilities/:id' do
-    before { get "/v1/facilities/#{facility_id}" }
+    before { get "/v1/facilities/#{facility_number}" }
 
     context 'when the record exists' do
       it 'returns the faciltiy' do
         expect(json).not_to be_empty
-        expect(json['id']).to eq(facility_id)
+        expect(json['fac_nbr']).to eq(facility_number)
       end
 
       it 'returns status code 200' do
@@ -38,7 +39,7 @@ RSpec.describe 'Facilities API', type: :request do
     end
 
     context 'when the record dosnt exist' do
-      let(:facility_id) { 100 }
+      let(:facility_number) { 100090 }
 
       it 'returns status code 404' do
         expect(response).to have_http_status(404)
