@@ -7,6 +7,6 @@ class FacilitySerializer < ActiveModel::Serializer
              :fac_res_zip_code, :county,
              :facility_telephone, :district_office, :status,
              :assigned_worker, :fac_licensee_type, :fac_lic_eff_date,
-             :fac_last_visit_date, :last_visit_reason,
+             :fac_last_visit_date, :last_visit_reason, :fac_email_address,
              :fac_capacity, :fac_orig_appl_rec_date
 end
