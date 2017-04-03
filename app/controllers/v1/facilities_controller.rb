@@ -32,7 +32,7 @@ class V1::FacilitiesController < ApplicationController
   end
 
   def search
-    @facilities = Facility.search(params[:query]).records
+    @facilities = Facility.retrieve_search_results(params[:query]).records
     json_response(@facilities)
   end
 

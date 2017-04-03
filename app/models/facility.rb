@@ -36,4 +36,12 @@ class Facility < ActiveRecord::Base
   def assigned_worker
     assigned_worker_mapping&.value
   end
+
+  def self.retrieve_search_results(query)
+    Facility.search query: {multi_match: {query: query,
+                                          type: 'cross_fields',
+                                          minimum_should_match: '80%',
+                                          fields: ['fac_res_street_addr','fac_res_city','fac_res_state','fac_res_zip_code'],
+                                          lenient: true}}
+  end
 end
