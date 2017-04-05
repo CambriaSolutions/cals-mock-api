@@ -13,6 +13,17 @@ class Facility < ActiveRecord::Base
   belongs_to :last_visit_reason_mapping, :class_name => 'CodeMapping::LastVisitReason', :foreign_key => 'fac_last_visit_reason'
   belongs_to :assigned_worker_mapping, :class_name => 'CodeMapping::AssignedWorker', :foreign_key => 'fac_do_eval_code'
 
+  mapping dynamic: 'false' do
+    indexes :fac_res_street_addr, type: 'text'
+    indexes :fac_res_city, type: 'text'
+    indexes :fac_res_state, type: 'text'
+    indexes :fac_res_zip_code, type: 'text'
+    indexes :fac_type
+    indexes :fac_nbr
+    indexes :fac_name
+    indexes :fac_co_nbr
+  end
+
   def county
     county_mapping&.value
   end
@@ -35,5 +46,13 @@ class Facility < ActiveRecord::Base
 
   def assigned_worker
     assigned_worker_mapping&.value
+  end
+
+  def self.retrieve_search_results(query)
+    Facility.search query: {multi_match: {query: query,
+                                          type: 'cross_fields',
+                                          minimum_should_match: '50%',
+                                          fields: ['fac_nbr', 'fac_co_nbr', 'fac_type', 'fac_name', 'fac_res_street_addr','fac_res_city', 'fac_res_state'],
+                                          lenient: true}}
   end
 end

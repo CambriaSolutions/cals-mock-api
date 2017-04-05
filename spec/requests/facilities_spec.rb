@@ -1,4 +1,5 @@
 require 'rails_helper'
+include SearchHelper
 
 RSpec.describe 'Facilities API', type: :request do
 
@@ -52,4 +53,44 @@ RSpec.describe 'Facilities API', type: :request do
 
   end
 
+
+  describe 'GET /facilities/search', elasticsearch: true do
+
+    let(:search_query) { "#{facilities.last.fac_nbr}, #{facilities.last.fac_co_nbr}, #{facilities.last.fac_type}, #{facilities.last.fac_name}, #{facilities.last.fac_res_street_addr}, #{facilities.last.fac_res_city}, #{facilities.last.fac_res_state}" }
+
+    before do
+      prepare_indices
+      get "/v1/facilities/search?query=#{search_query}"
+    end
+
+    context 'when 100% criteria match' do
+      it 'returns matching facility' do
+        expect(json).not_to be_empty
+
+        expect(json[0]['fac_nbr']).to eq(facilities.last.fac_nbr)
+      end
+    end
+
+    context 'when 50% criteria match' do
+      let(:search_query) { "#{facilities.last.fac_nbr}, 000, 000, 'incorrect_name', #{facilities.last.fac_res_street_addr }, 'incorrect_city', 'incorrect_state'" }
+
+      it 'returns facility matching search 100% criteria' do
+        expect(json).not_to be_empty
+
+        expect(json[0]['fac_nbr']).to eq(facilities.last.fac_nbr)
+      end
+    end
+
+    context 'when 40% criteria match' do
+      let(:search_query) { "000, 000, 000, 'incorrect_name', 'random_address', #{facilities.last.fac_res_city}, #{facilities.last.fac_res_state}" }
+
+      it 'returns status code 404' do
+        expect(response).to have_http_status(404)
+      end
+
+      it 'returns a not found message' do
+        expect(response.body).to match(/Couldn't find Facility/)
+      end
+    end
+  end
 end
