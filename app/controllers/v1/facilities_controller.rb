@@ -33,7 +33,11 @@ class V1::FacilitiesController < ApplicationController
 
   def search
     @facilities = Facility.retrieve_search_results(params[:query]).records
-    json_response(@facilities)
+    if @facilities.count > 0
+      json_response(@facilities)
+    else
+      render json: I18n.t('facilities_controller.facility_not_found'), status: :not_found
+    end
   end
 
   private

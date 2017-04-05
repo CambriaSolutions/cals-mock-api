@@ -22,11 +22,6 @@ class Facility < ActiveRecord::Base
     indexes :fac_nbr
     indexes :fac_name
     indexes :fac_co_nbr
-
-    indexes :type_mapping do
-      indexes :value, type: 'text',
-       "index": 'not_analyzed'
-    end
   end
 
   def county
@@ -57,7 +52,7 @@ class Facility < ActiveRecord::Base
     Facility.search query: {multi_match: {query: query,
                                           type: 'cross_fields',
                                           minimum_should_match: '50%',
-                                          fields: ['fac_nbr', 'fac_co_nbr', 'fac_type', 'fac_name' 'fac_res_street_addr','fac_res_city', 'fac_res_state'],
+                                          fields: ['fac_nbr', 'fac_co_nbr', 'fac_type', 'fac_name', 'fac_res_street_addr','fac_res_city', 'fac_res_state'],
                                           lenient: true}}
   end
 end
