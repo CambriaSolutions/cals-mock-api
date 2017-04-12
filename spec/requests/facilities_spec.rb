@@ -16,13 +16,12 @@ RSpec.describe 'Facilities API', type: :request do
 
     it 'returns facilities' do
       expect(json).not_to be_empty
-      expect(json.size).to eq(10)
+      expect(json['facilities'].count).to eq(10)
     end
 
     it 'returns status code 200' do
       expect(response).to have_http_status(200)
     end
-
   end
 
   describe 'GET /facilities/:id' do
@@ -30,8 +29,8 @@ RSpec.describe 'Facilities API', type: :request do
 
     context 'when the record exists' do
       it 'returns the faciltiy' do
-        expect(json).not_to be_empty
-        expect(json['fac_nbr']).to eq(facility_number)
+        expect(json['facility']).not_to be_empty
+        expect(json['facility']['fac_nbr']).to eq(facility_number)
       end
 
       it 'returns status code 200' do
@@ -47,12 +46,11 @@ RSpec.describe 'Facilities API', type: :request do
       end
 
       it 'returns a not found message' do
-        expect(response.body).to match(/Couldn't find Facility/)
+        expect(json['error']).to eq "Couldn't find Facility"
       end
     end
 
   end
-
 
   describe 'GET /facilities/search', elasticsearch: true do
 
@@ -67,7 +65,11 @@ RSpec.describe 'Facilities API', type: :request do
       it 'returns matching facility' do
         expect(json).not_to be_empty
 
-        expect(json[0]['fac_nbr']).to eq(facilities.last.fac_nbr)
+        expect(json['facilities'][0]['fac_nbr']).to eq(facilities.last.fac_nbr)
+      end
+
+      it 'returns json with total in meta data' do
+        expect(json['meta']['total']).to eq 1
       end
     end
 
@@ -75,9 +77,10 @@ RSpec.describe 'Facilities API', type: :request do
       let(:search_query) { "#{facilities.last.fac_nbr}, 000, 000, 'incorrect_name', #{facilities.last.fac_res_street_addr }, 'incorrect_city', 'incorrect_state'" }
 
       it 'returns facility matching search 100% criteria' do
-        expect(json).not_to be_empty
+        expect(json['facilities']).not_to be_empty
 
-        expect(json[0]['fac_nbr']).to eq(facilities.last.fac_nbr)
+
+        expect(json['facilities'][0]['fac_nbr']).to eq(facilities.last.fac_nbr)
       end
     end
 
@@ -89,7 +92,7 @@ RSpec.describe 'Facilities API', type: :request do
       end
 
       it 'returns a not found message' do
-        expect(response.body).to match(/Couldn't find Facility/)
+        expect(json['error']).to eq "Couldn't find Facility"
       end
     end
   end

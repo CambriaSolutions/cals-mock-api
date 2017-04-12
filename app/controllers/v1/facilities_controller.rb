@@ -12,7 +12,7 @@ class V1::FacilitiesController < ApplicationController
     if @facility
       json_response(@facility)
     else
-      render json: I18n.t('facilities_controller.facility_not_found'), status: :not_found
+      render json: {error: I18n.t('facilities_controller.facility_not_found')}, status: :not_found
     end
   end
 
@@ -34,19 +34,20 @@ class V1::FacilitiesController < ApplicationController
   def search
     @facilities = Facility.retrieve_search_results(params[:query]).records
     if @facilities.count > 0
-      json_response(@facilities)
+      # render json: @facilities, status: :ok
+      render json: @facilities, meta: {total: @facilities.count}, status: :ok
     else
-      render json: I18n.t('facilities_controller.facility_not_found'), status: :not_found
+      render json: {error: I18n.t('facilities_controller.facility_not_found')}, status: :not_found
     end
   end
 
   private
-    def find_facility
-      val = params[:id]
-      @facility = Facility.find_by(fac_nbr: val)
-    end
+  def find_facility
+    val = params[:id]
+    @facility = Facility.find_by(fac_nbr: val)
+  end
 
-    def facility_params
-      params.permit(:name, :admin_name, :capacity, :number, :approval_date)
-    end
+  def facility_params
+    params.permit(:name, :admin_name, :capacity, :number, :approval_date)
+  end
 end
