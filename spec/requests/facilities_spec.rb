@@ -52,13 +52,29 @@ RSpec.describe 'Facilities API', type: :request do
 
   end
 
-  describe 'GET /facilities/search', elasticsearch: true do
+  describe 'POST /facilities/search', elasticsearch: true do
 
-    let(:search_query) { "#{facilities.last.fac_nbr}, #{facilities.last.fac_co_nbr}, #{facilities.last.fac_type}, #{facilities.last.fac_name}, #{facilities.last.fac_res_street_addr}, #{facilities.last.fac_res_city}, #{facilities.last.fac_res_state}" }
+    let(:headers) {{'ACCEPT': 'application/json'}}
+
+    let(:search_query) do
+      {
+          'query':{
+              'terms':{
+                  'fac_nbr': facilities.last.fac_nbr,
+                  'fac_co_nbr': facilities.last.fac_co_nbr,
+                  'fac_type': facilities.last.fac_type,
+                  'fac_name': facilities.last.fac_name,
+                  'fac_res_street_addr': facilities.last.fac_res_street_addr,
+                  'fac_res_city': facilities.last.fac_res_city,
+                  'fac_res_state': facilities.last.fac_res_state
+              }
+          }
+      }
+    end
 
     before do
       prepare_indices
-      get "/v1/facilities/search?query=#{search_query}"
+      post '/v1/facilities/search', params: search_query, headers: headers
     end
 
     context 'when 100% criteria match' do
@@ -74,18 +90,45 @@ RSpec.describe 'Facilities API', type: :request do
     end
 
     context 'when 50% criteria match' do
-      let(:search_query) { "#{facilities.last.fac_nbr}, 000, 000, 'incorrect_name', #{facilities.last.fac_res_street_addr }, 'incorrect_city', 'incorrect_state'" }
 
-      it 'returns facility matching search 100% criteria' do
+      let(:search_query) do
+        {
+            'query':{
+                'terms':{
+                    'fac_nbr': facilities.last.fac_nbr,
+                    'fac_co_nbr': '123',
+                    'fac_type': '123',
+                    'fac_name': 'incorrect_name',
+                    'fac_res_street_addr': facilities.last.fac_res_street_addr,
+                    'fac_res_city': 'incorrect_city',
+                    'fac_res_state': 'incorrect_state'
+                }
+            }
+        }
+      end
+
+      it 'returns facility matching search 50% criteria' do
         expect(json['facilities']).not_to be_empty
-
-
         expect(json['facilities'][0]['fac_nbr']).to eq(facilities.last.fac_nbr)
       end
     end
 
     context 'when 40% criteria match' do
-      let(:search_query) { "000, 000, 000, 'incorrect_name', 'random_address', #{facilities.last.fac_res_city}, #{facilities.last.fac_res_state}" }
+      let(:search_query) do
+        {
+            'query':{
+                'terms':{
+                    'fac_nbr': facilities.last.fac_nbr,
+                    'fac_co_nbr': '000',
+                    'fac_type': '000',
+                    'fac_name': 'incorrect_name',
+                    'fac_res_street_addr': 'incorrect_address',
+                    'fac_res_city': 'incorrect_city',
+                    'fac_res_state': facilities.last.fac_res_state
+                }
+            }
+        }
+      end
 
       it 'returns status code 404' do
         expect(response).to have_http_status(404)
