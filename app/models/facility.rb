@@ -48,11 +48,11 @@ class Facility < ActiveRecord::Base
     assigned_worker_mapping&.value
   end
 
-  def self.retrieve_search_results(query)
-    Facility.search query: {multi_match: {query: query,
+  def self.retrieve_search_results(search_params)
+    Facility.search query: {multi_match: {query: search_params.values.reject(&:empty?).join(','),
                                           type: 'cross_fields',
                                           minimum_should_match: '50%',
-                                          fields: ['fac_nbr', 'fac_co_nbr', 'fac_type', 'fac_name', 'fac_res_street_addr','fac_res_city', 'fac_res_state'],
+                                          fields: search_params.keys,
                                           lenient: true}}
   end
 end

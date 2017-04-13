@@ -4,7 +4,7 @@ Rails.application.routes.draw do
 
   namespace :v1 do
     resources :facilities do
-      collection { get :search }
+      collection { post :search }
     end
   end
 end

@@ -32,9 +32,8 @@ class V1::FacilitiesController < ApplicationController
   end
 
   def search
-    @facilities = Facility.retrieve_search_results(params[:query]).records
+    @facilities = Facility.retrieve_search_results(search_params).records
     if @facilities.count > 0
-      # render json: @facilities, status: :ok
       render json: @facilities, meta: {total: @facilities.count}, status: :ok
     else
       render json: {error: I18n.t('facilities_controller.facility_not_found')}, status: :not_found
@@ -49,5 +48,9 @@ class V1::FacilitiesController < ApplicationController
 
   def facility_params
     params.permit(:name, :admin_name, :capacity, :number, :approval_date)
+  end
+
+  def search_params
+    params.require(:query).require(:terms).permit(:fac_nbr, :fac_co_nbr, :fac_type, :fac_name, :fac_res_street_addr, :fac_res_city, :fac_res_state)
   end
 end
