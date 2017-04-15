@@ -23,3 +23,4 @@ en:
   hello: "Hello world"
   facilities_controller:
       facility_not_found: "Couldn't find Facility"
+      facility_not_found_bad_request: "Couldn't find Facility, bad request: %{error}"

@@ -56,75 +56,41 @@ RSpec.describe 'Facilities API', type: :request do
 
     let(:headers) {{'ACCEPT': 'application/json'}}
 
-    let(:search_query) do
-      {
-          'query':{
-              'terms':{
-                  'fac_nbr': facilities.last.fac_nbr,
-                  'fac_co_nbr': facilities.last.fac_co_nbr,
-                  'fac_type': facilities.last.fac_type,
-                  'fac_name': facilities.last.fac_name,
-                  'fac_res_street_addr': facilities.last.fac_res_street_addr,
-                  'fac_res_city': facilities.last.fac_res_city,
-                  'fac_res_state': facilities.last.fac_res_state
-              }
-          }
-      }
-    end
-
     before do
       prepare_indices
-      post '/v1/facilities/search', params: search_query, headers: headers
+      post '/v1/facilities/search', params: search_params, headers: headers
     end
 
-    context 'when 100% criteria match' do
-      it 'returns matching facility' do
-        expect(json).not_to be_empty
-
-        expect(json['facilities'][0]['fac_nbr']).to eq(facilities.last.fac_nbr)
-      end
-
-      it 'returns json with total in meta data' do
-        expect(json['meta']['total']).to eq 1
-      end
-    end
-
-    context 'when 50% criteria match' do
-
-      let(:search_query) do
+    context 'with valid search params' do
+      let(:search_params) do
         {
             'query':{
-                'terms':{
-                    'fac_nbr': facilities.last.fac_nbr,
-                    'fac_co_nbr': '123',
-                    'fac_type': '123',
-                    'fac_name': 'incorrect_name',
-                    'fac_res_street_addr': facilities.last.fac_res_street_addr,
-                    'fac_res_city': 'incorrect_city',
-                    'fac_res_state': 'incorrect_state'
+                'multi_match':{
+                    'query':"#{facilities.last.fac_nbr}, #{facilities.last.fac_res_city}",
+                    'type':'cross_fields',
+                    'minimum_should_match':'50%',
+                    'fields':['fac_nbr', 'fac_res_city'],
+                    'lenient':'true'
                 }
             }
         }
       end
 
       it 'returns facility matching search 50% criteria' do
-        expect(json['facilities']).not_to be_empty
         expect(json['facilities'][0]['fac_nbr']).to eq(facilities.last.fac_nbr)
       end
     end
 
-    context 'when 40% criteria match' do
-      let(:search_query) do
+    context 'with search params without a match' do
+      let(:search_params) do
         {
             'query':{
-                'terms':{
-                    'fac_nbr': facilities.last.fac_nbr,
-                    'fac_co_nbr': '000',
-                    'fac_type': '000',
-                    'fac_name': 'incorrect_name',
-                    'fac_res_street_addr': 'incorrect_address',
-                    'fac_res_city': 'incorrect_city',
-                    'fac_res_state': facilities.last.fac_res_state
+                'multi_match':{
+                    'query':'090',
+                    'type':'cross_fields',
+                    'minimum_should_match':'50%',
+                    'fields':['fac_nbr', 'fac_res_city'],
+                    'lenient':'true'
                 }
             }
         }
@@ -136,6 +102,46 @@ RSpec.describe 'Facilities API', type: :request do
 
       it 'returns a not found message' do
         expect(json['error']).to eq "Couldn't find Facility"
+      end
+    end
+
+    context 'with invalid search params' do
+      let(:search_params) do
+        {
+            'query':{
+                'wrong_type_name':{
+                    'query':'090',
+                    'type':'cross_fields',
+                    'minimum_should_match':'50%',
+                    'fields':['fac_nbr', 'fac_res_city'],
+                    'lenient':'true'
+                }
+            }
+        }
+      end
+
+      it 'returns status code 404' do
+        expect(response).to have_http_status(500)
+      end
+
+      it 'returns a not found message' do
+        expect(json['error']).to match /parsing_exception/
+      end
+    end
+  end
+
+  describe 'GET /facilities/search', elasticsearch: true do
+
+    let(:search_query) { "#{facilities.last.fac_name}" }
+
+    before do
+      prepare_indices
+      get "/v1/facilities/search?query=#{search_query}"
+    end
+
+    context 'with a valid search string' do
+      it 'returns matching facility' do
+        expect(json['facilities'][0]['fac_nbr']).to eq(facilities.last.fac_nbr)
       end
     end
   end
