@@ -34,7 +34,7 @@ class V1::FacilitiesController < ApplicationController
   def search
     begin
       @facilities = if request.post?
-                      Facility.search('query': search_params).records
+                      Facility.search(request.raw_post).records
                     else
                       Facility.search('query': {'query_string': {'query': search_params}}).records
                     end
