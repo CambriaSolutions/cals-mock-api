@@ -63,17 +63,7 @@ RSpec.describe 'Facilities API', type: :request do
 
     context 'with valid search params' do
       let(:search_params) do
-        {
-            'query':{
-                'multi_match':{
-                    'query':"#{facilities.last.fac_nbr}, #{facilities.last.fac_res_city}",
-                    'type':'cross_fields',
-                    'minimum_should_match':'50%',
-                    'fields':['fac_nbr', 'fac_res_city'],
-                    'lenient':'true'
-                }
-            }
-        }
+        "{\"query\" : { \"term\" : { \"fac_nbr\" : #{facilities.last.fac_nbr} }}}"
       end
 
       it 'returns facility matching search 50% criteria' do
@@ -83,17 +73,7 @@ RSpec.describe 'Facilities API', type: :request do
 
     context 'with search params without a match' do
       let(:search_params) do
-        {
-            'query':{
-                'multi_match':{
-                    'query':'090',
-                    'type':'cross_fields',
-                    'minimum_should_match':'50%',
-                    'fields':['fac_nbr', 'fac_res_city'],
-                    'lenient':'true'
-                }
-            }
-        }
+        "{\"query\" : { \"term\" : { \"fac_nbr\" : 123 }}}"
       end
 
       it 'returns status code 404' do
@@ -125,7 +105,7 @@ RSpec.describe 'Facilities API', type: :request do
       end
 
       it 'returns a not found message' do
-        expect(json['error']).to match /parsing_exception/
+        expect(json['error']).to match /bad request/
       end
     end
   end
