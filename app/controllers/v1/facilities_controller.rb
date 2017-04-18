@@ -32,20 +32,26 @@ class V1::FacilitiesController < ApplicationController
   end
 
   def search
+    @facilities = Facility.search('query': {'query_string': {'query': search_params}}).records
+
+    if @facilities.count > 0
+      json_response @facilities
+    else
+      not_found_response
+    end
+  end
+
+  def full_text_search
     begin
-      @facilities = if request.post?
-                      Facility.search(request.raw_post).records
-                    else
-                      Facility.search('query': {'query_string': {'query': search_params}}).records
-                    end
+      @facilities = Facility.search(request.raw_post).records
 
       if @facilities.count > 0
-        render json: @facilities, meta: {total: @facilities.count}, status: :ok
+        render json: @facilities, adapter: :json, meta: {total: @facilities.count}, status: :ok
       else
-        render json: {error: I18n.t('facilities_controller.facility_not_found')}, status: :not_found
+        not_found_response
       end
     rescue Elasticsearch::Transport::Transport::Errors::BadRequest => e
-      render json: {error: I18n.t('facilities_controller.facility_not_found_bad_request', error: e.message)}, status:	:internal_server_error
+      render json: {error: I18n.t('facilities_controller.facility_not_found_bad_request', error: e.message)}, status: :internal_server_error
     end
   end
 
@@ -60,6 +66,6 @@ class V1::FacilitiesController < ApplicationController
   end
 
   def search_params
-    request.post? ? params.require('query').permit!.to_h : params.require('query')
+    params.require('query')
   end
 end

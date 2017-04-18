@@ -4,8 +4,10 @@ Rails.application.routes.draw do
 
   namespace :v1 do
     resources :facilities do
-      collection { post :search }
-      collection { get :search }
+      collection do
+        get :search
+        post :full_text_search
+      end
     end
   end
 end

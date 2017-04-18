@@ -16,7 +16,7 @@ RSpec.describe 'Facilities API', type: :request do
 
     it 'returns facilities' do
       expect(json).not_to be_empty
-      expect(json['facilities'].count).to eq(10)
+      expect(json.size).to eq(10)
     end
 
     it 'returns status code 200' do
@@ -29,8 +29,8 @@ RSpec.describe 'Facilities API', type: :request do
 
     context 'when the record exists' do
       it 'returns the faciltiy' do
-        expect(json['facility']).not_to be_empty
-        expect(json['facility']['fac_nbr']).to eq(facility_number)
+        expect(json).not_to be_empty
+        expect(json['fac_nbr']).to eq(facility_number)
       end
 
       it 'returns status code 200' do
@@ -52,13 +52,13 @@ RSpec.describe 'Facilities API', type: :request do
 
   end
 
-  describe 'POST /facilities/search', elasticsearch: true do
+  describe 'POST /facilities/full_text_search', elasticsearch: true do
 
     let(:headers) {{'ACCEPT': 'application/json'}}
 
     before do
       prepare_indices
-      post '/v1/facilities/search', params: search_params, headers: headers
+      post '/v1/facilities/full_text_search', params: search_params, headers: headers
     end
 
     context 'with valid search params' do
@@ -121,7 +121,7 @@ RSpec.describe 'Facilities API', type: :request do
 
     context 'with a valid search string' do
       it 'returns matching facility' do
-        expect(json['facilities'][0]['fac_nbr']).to eq(facilities.last.fac_nbr)
+        expect(json[0]['fac_nbr']).to eq(facilities.last.fac_nbr)
       end
     end
   end
