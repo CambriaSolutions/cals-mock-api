@@ -5,8 +5,10 @@ Rails.application.routes.draw do
   namespace :v1 do
     resources :facilities do
       collection do
-        get :search
-        post :full_text_search
+        get 'search', action: :search_query
+        post 'search', action: :search_post
+        # get :search
+        # post :full_text_search
       end
     end
   end

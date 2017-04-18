@@ -52,13 +52,13 @@ RSpec.describe 'Facilities API', type: :request do
 
   end
 
-  describe 'POST /facilities/full_text_search', elasticsearch: true do
+  describe 'POST /facilities/search', elasticsearch: true do
 
     let(:headers) {{'ACCEPT': 'application/json'}}
 
     before do
       prepare_indices
-      post '/v1/facilities/full_text_search', params: search_params, headers: headers
+      post '/v1/facilities/search', params: search_params, headers: headers
     end
 
     context 'with valid search params' do

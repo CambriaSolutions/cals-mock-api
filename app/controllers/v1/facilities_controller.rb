@@ -31,7 +31,7 @@ class V1::FacilitiesController < ApplicationController
     @facility.destroy
   end
 
-  def search
+  def search_query
     @facilities = Facility.search('query': {'query_string': {'query': search_params}}).records
 
     if @facilities.count > 0
@@ -41,7 +41,7 @@ class V1::FacilitiesController < ApplicationController
     end
   end
 
-  def full_text_search
+  def search_post
     begin
       @facilities = Facility.search(request.raw_post).records
 
